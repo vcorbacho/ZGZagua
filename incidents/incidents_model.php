@@ -25,6 +25,7 @@
  */
  
  class model_incident{
+ 	protected $id = -1;
  	protected $titulo = '';
  	protected $direccion = '';
  	protected $inicio = '';
@@ -35,6 +36,10 @@
  	protected $observaciones = '';
  	protected $latitud = '';
  	protected $longitud = '';
+ 	
+ 	// Datos adicionales
+ 	protected $pares = false;
+ 	protected $impares = false;
  	
  	/**
  	 * Constructor de la clase
@@ -62,6 +67,36 @@
 		$punto = explode(' ', $punto);
 		$this->latitud  = $punto[0];
 		$this->longitud = $punto[1];
+		
+		// Intervalo de horas
+		preg_match_all('/\d{1,2}/', $this->observaciones, $horas);
+		$horas = reset($horas);
+		if ( sizeof( $horas == 2 ) ) {
+			// Se han encontrado dos horas
+			$desde = reset($horas);
+			$hasta = end($horas);
+			// Ponemos ceros delante si procede
+			if ( strlen($desde) == 1 ) $desde = "0$desde";
+			if ( strlen($hasta) == 1 ) $hasta = "$hasta";
+			// Las agregamos a inicio y fin
+			$this->inicio.= " $desde:00";
+			$this->fin.= " $hasta:00";
+		} else {
+			// Como no hay horas, vamos a poner de las 00.00 a las 23.59
+			$this->inicio.= " 00:00";
+			$this->fin.= " 23:59";
+		}
+		
+		// ID
+		$link = $incidencia->link;
+		$link = explode( 'incidencia=', $link );
+		if( isset( $link[1] ) && is_numeric( $link[1] ) ) $this->id = $link[1];
+		
+		// Pares o impares
+		preg_match('/ pares/', $this->titulo, $pares );
+		if ( !empty( $pares ) ) $this->pares = true;
+		preg_match('/ impares/', $this->titulo, $impares );
+		if ( !empty( $impares ) ) $this->impares = true;
  	}
  	
  	/**
@@ -71,6 +106,7 @@
  	 */
  	private function sanitize($str){
  		$str = utf8_decode( $str );
+ 		$str = html_entity_decode( $str );
  		$str = explode(':', $str, 2);
  		if ( is_array( $str ) && sizeof( $str ) == 2 ) $str = $str[ 1 ]; elseif( is_array( $str ) ) $str = reset( $str );
  		$str = trim( $str );
@@ -119,15 +155,26 @@
 	 	
 	 	// Fecha de inicio
 	 	$inicio = strtotime($this->inicio);
-	 	$inicio = date('Y-m-d',$inicio);
-	 	
+	 	$inicio = date('Y-m-d H:i:s',$inicio);
 	 	// Fecha de finalizacion
 	 	$fin = strtotime($this->fin);
-	 	$fin = date('Y-m-d',$fin);
+	 	$fin = date('Y-m-d H:i:s',$fin);
 	 	
-	 	$sql = "REPLACE cortes (titulo,direccion,inicio,fin,motivo,motivo2,tramo,observaciones,latitud,longitud) VALUES " .
-		 	"('" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->motivo2 . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "')";
+	 	// SQL Injection
+	 	$id            = mysql_escape_string( $this->id );
+	 	$titulo        = mysql_escape_string( $this->titulo );
+	 	$direccion     = mysql_escape_string( $this->direccion );
+	 	$motivo        = mysql_escape_string( $this->motivo );
+	 	$motivo2       = mysql_escape_string( $this->motivo2 );
+	 	$tramo         = mysql_escape_string( $this->tramo );
+	 	$observaciones = mysql_escape_string( $this->observaciones );
+	 	$latitud       = mysql_escape_string( $this->latitud );
+	 	$longitud      = mysql_escape_string( $this->longitud );
 	 	
+	 	if ( $this->id != -1 ) $sql = "REPLACE cortes (corteID,titulo,direccion,inicio,fin,motivo,motivo2,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
+		 	"('" . $this->id . "','" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->motivo2 . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
+		 else $sql = "REPLACE cortes (titulo,direccion,inicio,fin,motivo,motivo2,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
+		 	"('" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->motivo2 . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
 	 	$database->query( $sql );
  	}
  }
