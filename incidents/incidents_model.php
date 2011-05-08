@@ -125,7 +125,6 @@
  	 	}
  	 	
  	 	$sql = "SELECT * FROM cortes $where";
-
  	 	$resultado = $database->query( $sql );
 
  	 	while( $row = mysql_fetch_array( $resultado ) ) {
@@ -245,5 +244,20 @@
  	public function get_pares(){return $this->pares;}
  	public function get_titulo(){return $this->titulo;}
  	public function get_tramo(){return $this->tramo;}
+ 	/**
+ 	 * Devuelve una descripcion completa en HTML (para burbujas y demas)
+ 	 */
+ 	public function get_descripcion() {
+ 		setlocale(LC_ALL, 'es_ES');
+ 		$formato = "%A %e de %B de %Y, a las %H:%M";
+ 		$inicio = strftime($formato, strtotime( $this->inicio ) );
+ 		$fin = strftime($formato, strtotime( $this->fin ) );
+ 		
+ 		$str = '<h1>' . $this->titulo . '</h1>';
+ 		$str.= '<table><tr><td><span class="b">Inicio:</td><td>' . $inicio . '</td></tr>';
+ 		$str.= '<tr><td><span class="b">Fin:</td><td>' . $fin . '</td></tr>';
+ 		$str.= '<tr><td colspan="2"><span class="b">Observaciones:</td></tr><tr><td colspan="2">' . $this->observaciones . '</td></tr></table>';
+ 		return $str;
+ 	}
  }
 ?>

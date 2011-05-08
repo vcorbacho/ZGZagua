@@ -26,14 +26,24 @@ require_once( 'common/database.php' );
 require_once( 'incidents/incidents_controller.php' );
 require_once( 'users/users_controller.php' );
 
+session_start();
+
 switch ( Controller::get( 'action' ) ) {
 	case 'incidents_cron':
 		// Obtiene los cortes de agua
 		controller_incidents::load_xml();
 		break;
+	case 'incidents_notify':
+		// Notifica los cortes de agua
+		controller_incidents::notify();
 	case 'login':
 		controller_user::login();
 		break;
+	case 'suggest':
+		controller_incidents::suggest();
+		break;
+	case 'estadisticas':
+	case 'cortes':
 	default:
 		// Index
 		Controller::show_html_header();
