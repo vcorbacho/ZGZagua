@@ -44,5 +44,54 @@
  		echo "Datos importados";
  		
  	}
+ 	/**
+ 	 * Genera un mapa con las incidencias obtenidas a partir de los parametros pasados
+ 	 * @param Array $arrayops Array de opciones para la busqueda de cortes de agua.
+ 	 * @param int $sizex Ancho del mapa
+ 	 * @param int $sizey Alto del mapa
+ 	 */
+ 	function create_map( $arrayopts = '', $sizex = 600, $sizey = 400 ) {
+ 		$str = '';
+ 		// Si no se pasa fecha, por defecto se sacan las de hoy
+ 		if( $arrayopts == '' ) $arrayopts[ 'fin_max' ] = date('Y-m-d 23:59:59');
+ 		// TODO quitar esta linea, es solo debug y cambiar fin_max por fin
+ 		$arrayopts[ 'inicio_min' ]  = date('Y-m-01 00:00:00');
+ 		
+ 		// Obtenemos las incidencias
+ 		$incidencias = model_incident::get_incidents( $arrayopts );
+ 		
+ 		// JS googlemaps
+ 		$str.= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>';	
+ 		
+ 		// Generamos el mapa
+ 		$str.= "<script type=\"text/javascript\">
+ 				function initialize(){
+ 					var latlng = new google.maps.LatLng(41.65,-0.87);
+ 					var myOptions = {
+					    zoom: 12,
+						center: latlng,
+						mapTypeId: google.maps.MapTypeId.ROADMAP
+ 					};
+ 					var map = new google.maps.Map(document.getElementById('incidents_map'), myOptions);";
+ 		
+ 		if( is_array( $incidencias ) ) {
+ 			foreach( $incidencias as $incidencia ) {
+ 				$str.= "markerOpts = {flat:true,
+ 							map: map,
+ 							position: new google.maps.LatLng(" . $incidencia->get_latitud() . "," . $incidencia->get_longitud() . "),
+ 							title: '" . str_replace("\n",' ',$incidencia->get_titulo()) . "'};
+						marker = new google.maps.Marker(markerOpts);";
+ 			}
+ 		}
+ 					
+ 		$str.= "}
+ 				$(document).ready(initialize);
+ 				</script>";
+
+ 		// Capas para el mapa
+ 		$str.= '<div id="incidents_map" style="height:' . $sizey . 'px;width:' . $sizex . 'px;"></div>';
+
+ 		echo $str;
+ 	}
  }
 ?>

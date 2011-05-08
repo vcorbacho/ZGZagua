@@ -32,10 +32,11 @@ class Controller {
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
 		<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>ZGZagua</title>
 		<link rel="stylesheet" type="text/css" href="css/default.css" media="screen" />
-		<script type="text/javascript" src="https://www.google.com/jsapi?key=ABQIAAAA2JikbGJZ0fUtFRmFto1WoBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTDj_fgsM8tRX5c1uxioRFlfhBb0Q"></script>
+		<link rel="shortcut icon" href="img/favicon.ico">
+		<script type="text/javascript" src="https://www.google.com/jsapi?key=' . self::google_key() . '"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script type="text/javascript" language="javascript">
 
@@ -66,6 +67,10 @@ class Controller {
 				'<td><img src="img/btn_openid.png" alt=""/></td>' .
 				'<td><img src="img/btn_twitter.png" alt=""/></td>' .
 				'</tr></table></div>';
+		// Enlaces menu superior 
+		echo '<div id="menu_home"><a href="/">HOME</a></div>';
+		echo '<div id="menu_estadisticas"><a href="/">ESTAD&Iacute;STICAS</a></div>';
+		echo '<div id="menu_cortes"><a href="/">CORTES PREVISTOS</a></div>';
 		
 		echo '</div>';
 		
@@ -77,7 +82,9 @@ class Controller {
 			// Login de usuarios
 		} else {
 			// Portada
-			echo '<img src="img/cuerpo.png">';
+			echo '<div id="container_index"><div id="map_index">';
+			controller_incidents::create_map();
+			echo '</div></div>';
 		}
 		echo '</div>';
 		
@@ -97,6 +104,13 @@ class Controller {
 	 		$return = trim( $_GET[$key] );
 	 	}
 	 	return $return;
+	 }
+	 
+	 /**
+	  * Proporciona la api key de google asociada al dominio
+	  */
+	 public function google_key() {
+	 	return 'ABQIAAAA2JikbGJZ0fUtFRmFto1WoBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTDj_fgsM8tRX5c1uxioRFlfhBb0Q';
 	 }
 }
 ?>

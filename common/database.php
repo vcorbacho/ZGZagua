@@ -40,7 +40,7 @@
  	 */
  	 function query( $sql) {
  	 	mysql_query( "set names 'utf8'" );
- 	 	mysql_query( $sql, $this->database);
+ 	 	return mysql_query( $sql, $this->database);
  	 }
  }
 ?>

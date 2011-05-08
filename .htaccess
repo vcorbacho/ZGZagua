@@ -1,2 +1,4 @@
-RewriteEngine On
-#RewriteRule ^([^/]+)/([^/]+) index.php?action=$1&param=$2 [NC]
+Options +FollowSymLinks
+RewriteEngine Off
+RewriteRule ^([^/]+)/([^/]+)$ index.php?action=$1 [NC]
+RewriteRule !\.(js|ico|gif|jpg|JPG|png|css|php|phtml|pdf|txt|xml)$ index.php

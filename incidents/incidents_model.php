@@ -31,7 +31,6 @@
  	protected $inicio = '';
  	protected $fin = '';
  	protected $motivo = '';
- 	protected $motivo2 = '';
  	protected $tramo = '';
  	protected $observaciones = '';
  	protected $latitud = '';
@@ -45,59 +44,115 @@
  	 * Constructor de la clase
  	 * @param Object $incidencia Objeto de tipo SimpleXMLElement
  	 */
- 	function __construct( $incidencia ) {
- 		// Sacamos la descripcion
- 		$descripcion = $incidencia->description;
- 		$descripcion = $descripcion->ul;
- 		$descripcion = $descripcion->children();
- 		$descripcion = reset($descripcion);
- 		
- 		// Ponemos los atributos
- 		$this->titulo        = $this->sanitize( $incidencia->title );
- 		$this->direccion     = $this->sanitize( $descripcion[0] );
- 		$this->inicio        = $this->sanitize( $descripcion[1] );
- 		$this->fin           = $this->sanitize( $descripcion[2] );
- 		$this->motivo        = $this->sanitize( $descripcion[3] );
- 		$this->tramo         = $this->sanitize( $descripcion[4] );
- 		$this->motivo2       = $this->sanitize( $descripcion[5] );
- 		$this->observaciones = $this->sanitize( $descripcion[6] );
- 		
- 		// Coordenadas
-		$punto = reset( $incidencia->children( 'http://www.georss.org/georss' ) );
-		$punto = explode(' ', $punto);
-		$this->latitud  = $punto[0];
-		$this->longitud = $punto[1];
-		
-		// Intervalo de horas
-		preg_match_all('/\d{1,2}/', $this->observaciones, $horas);
-		$horas = reset($horas);
-		if ( sizeof( $horas == 2 ) ) {
-			// Se han encontrado dos horas
-			$desde = reset($horas);
-			$hasta = end($horas);
-			// Ponemos ceros delante si procede
-			if ( strlen($desde) == 1 ) $desde = "0$desde";
-			if ( strlen($hasta) == 1 ) $hasta = "$hasta";
-			// Las agregamos a inicio y fin
-			$this->inicio.= " $desde:00";
-			$this->fin.= " $hasta:00";
-		} else {
-			// Como no hay horas, vamos a poner de las 00.00 a las 23.59
-			$this->inicio.= " 00:00";
-			$this->fin.= " 23:59";
-		}
-		
-		// ID
-		$link = $incidencia->link;
-		$link = explode( 'incidencia=', $link );
-		if( isset( $link[1] ) && is_numeric( $link[1] ) ) $this->id = $link[1];
-		
-		// Pares o impares
-		preg_match('/ pares/', $this->titulo, $pares );
-		if ( !empty( $pares ) ) $this->pares = true;
-		preg_match('/ impares/', $this->titulo, $impares );
-		if ( !empty( $impares ) ) $this->impares = true;
+ 	function __construct( $incidencia = '' ) {
+ 		if ( is_a( $incidencia, 'SimpleXMLElement' ) ) {
+	 		// Sacamos la descripcion
+	 		$descripcion = $incidencia->description;
+	 		$descripcion = $descripcion->ul;
+	 		$descripcion = $descripcion->children();
+	 		$descripcion = reset($descripcion);
+	 		
+	 		// Ponemos los atributos
+	 		$this->titulo        = $this->sanitize( $incidencia->title );
+	 		$this->direccion     = $this->sanitize( $descripcion[0] );
+	 		$this->inicio        = $this->sanitize( $descripcion[1] );
+	 		$this->fin           = $this->sanitize( $descripcion[2] );
+	 		$this->motivo        = $this->sanitize( $descripcion[3] );
+	 		$this->tramo         = $this->sanitize( $descripcion[4] );
+	 		$this->observaciones = $this->sanitize( $descripcion[6] );
+	 		
+	 		// Coordenadas
+			$punto = reset( $incidencia->children( 'http://www.georss.org/georss' ) );
+			$punto = explode(' ', $punto);
+			$this->latitud  = $punto[0];
+			$this->longitud = $punto[1];
+			
+			// Intervalo de horas
+			preg_match_all('/\d{1,2}/', $this->observaciones, $horas);
+			$horas = reset($horas);
+			if ( sizeof( $horas == 2 ) ) {
+				// Se han encontrado dos horas
+				$desde = reset($horas);
+				$hasta = end($horas);
+				// Ponemos ceros delante si procede
+				if ( strlen($desde) == 1 ) $desde = "0$desde";
+				if ( strlen($hasta) == 1 ) $hasta = "$hasta";
+				// Las agregamos a inicio y fin
+				$this->inicio.= " $desde:00";
+				$this->fin.= " $hasta:00";
+			} else {
+				// Como no hay horas, vamos a poner de las 00.00 a las 23.59
+				$this->inicio.= " 00:00";
+				$this->fin.= " 23:59";
+			}
+			
+			// ID
+			$link = $incidencia->link;
+			$link = explode( 'incidencia=', $link );
+			if( isset( $link[1] ) && is_numeric( $link[1] ) ) $this->id = $link[1];
+			
+			// Pares o impares
+			preg_match('/ pares/', $this->titulo, $pares );
+			if ( !empty( $pares ) ) $this->pares = true;
+			preg_match('/ impares/', $this->titulo, $impares );
+			if ( !empty( $impares ) ) $this->impares = true;
+ 		} elseif ( is_array( $incidencia ) ) {
+ 			$this->set( $incidencia );
+ 		} 
  	}
+ 	
+ 	/**
+ 	 * Funcion para obtener registros almacenados a partir de un filtro.
+ 	 * @param Array $search_opts Array con opciones de busqueda
+ 	 */
+ 	 public function get_incidents ( $search_opts ) {
+ 	 	$database = new database();
+ 	 	$array_return = array();
+ 	 	
+ 	 	$where = " WHERE 1 ";
+ 	 	
+ 	 	if ( is_array( $search_opts ) ) {
+ 	 		foreach ( $search_opts as $opt => $value ) {
+ 	 			switch ( $opt ) {
+ 	 				case 'inicio': $where.= " AND inicio='$value'"; break;
+ 	 				case 'inicio_min': $where.= " AND inicio>='$value'"; break;
+ 	 				case 'inicio_max': $where.= " AND inicio<='$value'"; break;
+ 	 				case 'fin': $where.= " AND fin='$value'"; break;
+ 	 				case 'fin_min': $where.= " AND fin>='$value'"; break;
+ 	 				case 'fin_max': $where.= " AND fin<='$value'"; break;
+ 	 			}
+ 	 		}
+ 	 	}
+ 	 	
+ 	 	$sql = "SELECT * FROM cortes $where";
+
+ 	 	$resultado = $database->query( $sql );
+
+ 	 	while( $row = mysql_fetch_array( $resultado ) ) {
+ 	 		$array_return[ ] = new model_incident( $row );
+ 	 	}
+ 	 	
+ 	 	return $array_return;
+ 	 }
+ 	 
+ 	 /**
+ 	  * Funcion para completar los atributos de la clase a partir de un array asociativo.
+ 	  * @param Array $attributes Array con los atributos que se quieren poner
+ 	  */
+ 	 private function set ( $attributes ) {
+ 	 	if ( isset( $attributes['corteID'] ) ) $this->id = $attributes['corteID'];
+ 	 	if ( isset( $attributes['titulo'] ) ) $this->titulo = $attributes['titulo'];
+ 	 	if ( isset( $attributes['direccion'] ) ) $this->direccion = $attributes['direccion'];
+ 	 	if ( isset( $attributes['inicio'] ) ) $this->inicio = $attributes['inicio'];
+ 	 	if ( isset( $attributes['fin'] ) ) $this->fin = $attributes['fin'];
+ 	 	if ( isset( $attributes['motivo'] ) ) $this->motivo = $attributes['motivo'];
+ 	 	if ( isset( $attributes['tramo'] ) ) $this->tramo = $attributes['tramo'];
+ 	 	if ( isset( $attributes['observaciones'] ) ) $this->observaciones = $attributes['observaciones'];
+ 	 	if ( isset( $attributes['latitud'] ) ) $this->latitud = $attributes['latitud'];
+ 	 	if ( isset( $attributes['longitud'] ) ) $this->longitud = $attributes['longitud'];
+ 	 	if ( isset( $attributes['pares'] ) ) $this->pares = $attributes['pares'];
+ 	 	if ( isset( $attributes['impares'] ) ) $this->impares = $attributes['impares'];
+ 	 }
  	
  	/**
  	 * Funcion para pasar los campos extraidos del rss a textos normales (quita todo lo que sobra)
@@ -165,17 +220,30 @@
 	 	$titulo        = mysql_escape_string( $this->titulo );
 	 	$direccion     = mysql_escape_string( $this->direccion );
 	 	$motivo        = mysql_escape_string( $this->motivo );
-	 	$motivo2       = mysql_escape_string( $this->motivo2 );
 	 	$tramo         = mysql_escape_string( $this->tramo );
 	 	$observaciones = mysql_escape_string( $this->observaciones );
 	 	$latitud       = mysql_escape_string( $this->latitud );
 	 	$longitud      = mysql_escape_string( $this->longitud );
 	 	
-	 	if ( $this->id != -1 ) $sql = "REPLACE cortes (corteID,titulo,direccion,inicio,fin,motivo,motivo2,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
-		 	"('" . $this->id . "','" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->motivo2 . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
-		 else $sql = "REPLACE cortes (titulo,direccion,inicio,fin,motivo,motivo2,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
-		 	"('" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->motivo2 . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
+	 	if ( $this->id != -1 ) $sql = "REPLACE cortes (corteID,titulo,direccion,inicio,fin,motivo,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
+		 	"('" . $this->id . "','" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
+		 else $sql = "REPLACE cortes (titulo,direccion,inicio,fin,motivo,tramo,observaciones,latitud,longitud,pares,impares) VALUES " .
+		 	"('" . $this->titulo . "','" . $this->direccion . "','" . $inicio . "','" . $fin . "','" . $this->motivo . "','" . $this->tramo . "','" . $this->observaciones . "','" . $this->latitud . "','" . $this->longitud . "','" . $this->pares . "','" . $this->impares . "')";
 	 	$database->query( $sql );
  	}
+ 	
+ 	// Accesores
+ 	public function get_direccion(){return $this->direccion;}
+ 	public function get_fin(){return $this->fin;}
+ 	public function get_id(){return $this->id;}
+ 	public function get_impares(){return $this->impares;}
+ 	public function get_inicio(){return $this->inicio;}
+ 	public function get_latitud(){return $this->latitud;}
+ 	public function get_longitud(){return $this->longitud;}
+ 	public function get_motivo(){return $this->motivo;}
+ 	public function get_observaciones(){return $this->observaciones;}
+ 	public function get_pares(){return $this->pares;}
+ 	public function get_titulo(){return $this->titulo;}
+ 	public function get_tramo(){return $this->tramo;}
  }
 ?>
