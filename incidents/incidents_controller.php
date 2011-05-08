@@ -328,7 +328,6 @@
  	    	$database = new database();
  	    	$fecha = date('Y-m-d 23:59:59');
  	    	$sql = "select direccion,numero,email from locations l left join users u on u.id=l.user_id where u.last_notified<'$fecha'";
- 	    	
  	    	$usr_resultado = $database->query($sql);
  	    	
  	    	if($usuario = mysql_fetch_array($usr_resultado)){
@@ -338,8 +337,8 @@
  	    		do{
  	    			$notificaciones = '';
  	    			$direccion = str_replace(' ','%',$usuario['direccion']);
-	 	    		$sql = "SELECT * FROM cortes WHERE fin=$fecha AND direccion LIKE '$direccion' order by fin DESC limit 1"; // Buscamos el ultimo para cada direccion
-	 	    		$cortes = $database->query($sql);
+	 	    		$sql2 = "SELECT * FROM cortes WHERE fin='$fecha' AND direccion LIKE '$direccion' order by fin DESC limit 1"; // Buscamos el ultimo para cada direccion
+	 	    		$cortes = $database->query($sql2);
 	 	    		if( $calle = mysql_fetch_array($cortes)){
 	 	    			// Comprobamos numeros
 	 	    			$notificar = false;
