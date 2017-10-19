@@ -269,12 +269,7 @@
  	     		$ret = $row['contador'];
  	     	}
  	     	
- 	     	if( $ret < 20 ) {
- 	     		$ret = 46; // Esto es marketing puro y duro :P
- 	     	}
- 	     	
- 	     	return $ret;
+ 	     	return max( $ret, 100 );
  	     }
  	   
  }
-?>
