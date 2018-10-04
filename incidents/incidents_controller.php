@@ -61,7 +61,7 @@
  		$incidencias = model_incident::get_incidents( $arrayopts );
  		
  		// JS googlemaps
- 		$str.= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>';	
+ 		$str.= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q&sensor=false"></script>';	
  		$rand = rand();
  		// Generamos el mapa
  		$str.= "<script type=\"text/javascript\">
