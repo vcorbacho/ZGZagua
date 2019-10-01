@@ -1,24 +1,159 @@
-#container2{width:1000px; margin:0 auto;font-family:Arial,sans-serif;}
-#header{position:relative;width:1000px; height:98px; background: transparent url('../img/bg_header.png') no-repeat top left;}
-#footer{font-size:0.8em;padding-top:20px;text-align:right;width:960px; margin:0 22px 0 18px;height:48px; background: transparent url('../img/bg_footer.png') repeat-x top left;}
-a{text-decoration:none;color:#749ACB;font-weight:bold;}
-a:hover{color:#000000;}
-#login_btn{width:174px;height:28px;position:absolute;right:20px;top:42px;cursor:pointer;}
-#login_box{z-index:9999;padding:20px 12px 0 12px;color:#FFFFFF;font-size:0.9em;font-weight:bold;width:278px;height:180px;top:64px;background:transparent url('../img/login.png') no-repeat top right;position:absolute;right:21px;display:none;font-family:Arial,sans-serif;}
-.fullwidth{width:100%;}
-#container_index{width:100%;height:675px;position:relative;background:transparent url('../img/bg_index.png') no-repeat top left;}
-#map_index{position:relative;top:245px;left:354px;}
-.incidents_map{position:relative;}
-#menu_home{position:absolute;top:48px;left:300px;height:16px;color:#7C96CA;font-family:Arial,sans-serif;}
-#menu_estadisticas{position:absolute;top:48px;left:415px;height:16px;color:#7C96CA;font-family:Arial,sans-serif;}
-#menu_cortes{position:absolute;top:48px;left:595px;height:16px;color:#7C96CA;font-family:Arial,sans-serif;}
-h1{color:#7C96CA;}
-.b{font-weight: bold;}
-.map_description h1{font-size:1.0em;}
-#container_cortes{width:100%;}
-#container_cortes td{vertical-align: top;}
-#list_current_cortes h2{margin-bottom: 5px;}
-img{border:0;}
-#user_counter{cursor:default;text-align:right;color:#64788E;font-weight:bold;font-size:3.4em;position:relative;top:30px;left:5px;width:135px;height:45px;}
-#login_box a{color:#FFFFFF;}
-#register_btn{width:100px;height:30px;top:120px;left:70px;position:relative;cursor:pointer;}
+#container2 {
+    width: 1000px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+#header {
+    position: relative;
+    width: 1000px;
+    height: 98px;
+    background: transparent url('../img/bg_header.png') no-repeat top left;
+}
+
+#footer {
+    font-size: 0.8em;
+    padding-top: 20px;
+    text-align: right;
+    width: 960px;
+    margin: 0 22px 0 18px;
+    height: 48px;
+    background: transparent url('../img/bg_footer.png') repeat-x top left;
+}
+
+a {
+    text-decoration: none;
+    color: #749ACB;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #000000;
+}
+
+#login_btn {
+    width: 174px;
+    height: 28px;
+    position: absolute;
+    right: 20px;
+    top: 42px;
+    cursor: pointer;
+}
+
+#login_box {
+    z-index: 9999;
+    padding: 20px 12px 0 12px;
+    color: #FFFFFF;
+    font-size: 0.9em;
+    font-weight: bold;
+    width: 278px;
+    height: 180px;
+    top: 64px;
+    background: transparent url('../img/login.png') no-repeat top right;
+    position: absolute;
+    right: 21px;
+    display: none;
+    font-family: Arial, sans-serif;
+}
+
+.fullwidth {
+    width: 100%;
+}
+
+#container_index {
+    width: 100%;
+    height: 675px;
+    position: relative;
+    background: transparent url('../img/bg_index.png') no-repeat top left;
+}
+
+#map_index {
+    position: relative;
+    top: 245px;
+    left: 354px;
+}
+
+.incidents_map {
+    position: relative;
+}
+
+#menu_home {
+    position: absolute;
+    top: 48px;
+    left: 300px;
+    height: 16px;
+    color: #7C96CA;
+    font-family: Arial, sans-serif;
+}
+
+#menu_estadisticas {
+    position: absolute;
+    top: 48px;
+    left: 415px;
+    height: 16px;
+    color: #7C96CA;
+    font-family: Arial, sans-serif;
+}
+
+#menu_cortes {
+    position: absolute;
+    top: 48px;
+    left: 595px;
+    height: 16px;
+    color: #7C96CA;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #7C96CA;
+}
+
+.b {
+    font-weight: bold;
+}
+
+.map_description h1 {
+    font-size: 1.0em;
+}
+
+#container_cortes {
+    width: 100%;
+}
+
+#container_cortes td {
+    vertical-align: top;
+}
+
+#list_current_cortes h2 {
+    margin-bottom: 5px;
+}
+
+img {
+    border: 0;
+}
+
+#user_counter {
+    cursor: default;
+    text-align: right;
+    color: #64788E;
+    font-weight: bold;
+    font-size: 3.4em;
+    position: relative;
+    top: 30px;
+    left: 5px;
+    width: 135px;
+    height: 45px;
+}
+
+#login_box a {
+    color: #FFFFFF;
+}
+
+#register_btn {
+    width: 100px;
+    height: 30px;
+    top: 120px;
+    left: 70px;
+    position: relative;
+    cursor: pointer;
+}
