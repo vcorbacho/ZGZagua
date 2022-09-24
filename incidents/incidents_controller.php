@@ -130,7 +130,7 @@ class controller_incidents {
 
             foreach ( $incidencias as $incidencia ) {
                 $id = $incidencia->get_id();
-                $staticmap = 'http://maps.google.com/maps/api/staticmap?zoom=16&size=115x115&maptype=roadmap&markers=' . $incidencia->get_latitud() . ',' . $incidencia->get_longitud() . '&sensor=false';
+                $staticmap = 'https://maps.google.com/maps/api/staticmap?zoom=16&size=115x115&maptype=roadmap&markers=' . $incidencia->get_latitud() . ',' . $incidencia->get_longitud() . '&sensor=false';
                 $str .= '<tr><td><a id="' . $id . '" href="#' . $id . '" onclick="google.maps.event.trigger(marker' . $id . ',\'click\');"><img src="' . $staticmap . '" alt=""/></a></td>';
                 $str .= '<td><h2>' . $incidencia->get_titulo() . '</h2>' . $incidencia->get_observaciones() . '</td></tr>';
             }
@@ -159,7 +159,7 @@ class controller_incidents {
             $str .= '<div style="height:320px; overflow:auto;"><table id="list_current_cortes">';
 
             do {
-                $staticmap = 'http://maps.google.com/maps/api/staticmap?zoom=16&size=115x115&maptype=roadmap&markers=' . $row[ 'latitud' ] . ',' . $row[ 'longitud' ] . '&sensor=false';
+                $staticmap = 'https://maps.google.com/maps/api/staticmap?zoom=16&size=115x115&maptype=roadmap&markers=' . $row[ 'latitud' ] . ',' . $row[ 'longitud' ] . '&sensor=false';
                 $str .= '<tr><td><img src="' . $staticmap . '" alt=""/></td>';
                 $str .= '<td><h2>' . $row[ 'direccion' ] . ', ' . $row[ 'numero' ] . '</h2></td></tr>';
             } while ( $row = mysql_fetch_array( $resultados ) );
@@ -198,7 +198,7 @@ class controller_incidents {
                 echo '<h2 style="padding-left:30px;">Alerta guardada correctamente. Ir al <a href="index.php?action=perfil">perfil</a>.</h2>';
             } else {
                 // Formulario para registrar alerta
-                echo '<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>	
+                echo '<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>	
 <script type="text/javascript">
  $(document).ready(function(){
 
@@ -375,7 +375,7 @@ class controller_incidents {
                     $notificaciones = '<ul>' . $notificaciones . '</ul>';
                     $para = Controller::post( 'e-mail' );
                     $titulo = 'Registro en ZGZagua';
-                    $mensaje = Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="http://zgzagua.es">ZGZagua</a></div></body></html>';
+                    $mensaje = Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="https://zgzagua.es">ZGZagua</a></div></body></html>';
 
                     $cabeceras = 'MIME-Version: 1.0' . "\r\n";
                     $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
