@@ -6,12 +6,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -119,7 +119,7 @@ class model_incident {
      *
      * @return array
      */
-    public function get_incidents( $search_opts ) {
+    public static function get_incidents( $search_opts ) {
         $database = new database();
         $array_return = [];
 
@@ -153,7 +153,7 @@ class model_incident {
         $sql = "SELECT * FROM cortes $where";
         $resultado = $database->query( $sql );
 
-        while ( $row = mysql_fetch_array( $resultado ) ) {
+        while ( $row = mysqli_fetch_array( $resultado ) ) {
             $array_return[] = new model_incident( $row );
         }
 

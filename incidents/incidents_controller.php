@@ -6,12 +6,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,7 +54,7 @@ class controller_incidents {
      * @param int $sizex Ancho del mapa
      * @param int $sizey Alto del mapa
      */
-    function create_map( $arrayopts = [], $sizex = 600, $sizey = 400 ) {
+    public static function create_map( $arrayopts = [], $sizex = 600, $sizey = 400 ) {
         $str = '';
         // Si no se pasa fecha, por defecto se sacan las de hoy
         if ( empty( $arrayopts ) ) {
@@ -66,7 +66,7 @@ class controller_incidents {
         $incidencias = model_incident::get_incidents( $arrayopts );
 
         // JS googlemaps
-        $str .= '<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q&sensor=false"></script>';
+        $str .= '<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q&sensor=false"></script>';
         $rand = rand();
         // Generamos el mapa
         $str .= "<script type=\"text/javascript\">

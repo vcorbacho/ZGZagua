@@ -8,7 +8,7 @@
     position: relative;
     width: 1000px;
     height: 98px;
-    background: transparent url('../img/bg_header.png') no-repeat top left;
+    background: transparent url('../img/bg_header_no_login.png') no-repeat top left;
 }
 
 #footer {

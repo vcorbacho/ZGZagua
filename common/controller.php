@@ -6,61 +6,61 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  /**
   * Controlador de la aplicacion
-  * 
+  *
  * @author Victor Corbacho <victor@victorcorbacho.com>
  * @version 1.0.0 - 07/05/2011
  * @package common
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
- 
+
 class Controller {
 	/**
 	 * Funcion para mostrar la cabecera html
 	 * @param boolean $echo Lo muestra por pantalla si true
 	 * @param boolean $script Incluye scripts
 	 */
-	public function show_html_header( $echo = true, $script = true ) {
+	public static function show_html_header( $echo = true, $script = true ) {
 		$str = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 		<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
 		<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>ZGZagua</title>
-		<link rel="stylesheet" type="text/css" href="http://zgzagua.es/css/default.css" />
-		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
 		<link rel="shortcut icon" href="img/favicon.ico">';
 		if($script) $str.= '<script type="text/javascript" src="https://www.google.com/jsapi?key=' . self::google_key() . '"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script><script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>';
 		$str.= '</head>';
 		if($echo) echo $str; else return $str;
 	}
-	
+
 	/**
 	 * Funcion para mostrar el pie html
 	 */
-	public function show_html_footer($echo = true) {
+	public static function show_html_footer($echo = true) {
 		if( $echo) echo '</html>'; else return '</html>';;
 	}
-	
+
 	/**
 	 * Funcion para mostrar el cuerpo de la pagina
 	 */
-	public function show_html_body() {
+	public static function show_html_body() {
 		echo '<body><div id="container2">';
 		// Div cabecera
 		echo '<div id="header">';
 		// Enlace login
-		$url_login = 'index.php?action=login&provider=';
+		/*$url_login = 'index.php?action=login&provider=';
 		echo '<div id="login_btn" onclick="$(\'#login_box\').toggle(\'normal\');"></div>';
 		echo '<div id="login_box">';
 		if (isset($_SESSION[ 'userID' ] ) && $_SESSION[ 'userID' ] != '' ) {
@@ -76,18 +76,18 @@ class Controller {
 					//'<td><a href="#" onclick="$(\'#login_box\').load(\'' . $url_login . 'twitter\');return false;"><img src="img/btn_twitter.png" alt=""/></a></td>' .
 					'</tr></table>';
 		}
-		echo '</div>';
-		// Enlaces menu superior 
+		echo '</div>';*/
+		// Enlaces menu superior
 		echo '<div id="menu_home"><a href="index.php">HOME</a></div>';
 		echo '<div id="menu_estadisticas"><a href="index.php?action=estadisticas">ESTAD&Iacute;STICAS</a></div>';
 		echo '<div id="menu_cortes"><a href="index.php?action=cortes">CORTES PREVISTOS</a></div>';
-		
+
 		echo '</div>';
-		
+
 		// Div cuerpo
 		echo '<div id="container">';
 		$accion = Controller::get('action');
-		
+
 		if ( $accion == 'login' ) {
 			// Login de usuario (parte 1)
 			controller_user::login();
@@ -111,13 +111,13 @@ class Controller {
 			// Mostramos los datos
 			echo '<table id="container_cortes"><tr><td>
 			<h1>Cortes previstos para el ' . strftime("%e de %B de %Y",time()) . '</h1>';
-			
+
 			controller_incidents::generate_list( $arrayopts );
-			
+
 			echo '</td><td style="padding:50px 20px 20px 10px;">';
-			
+
 			controller_incidents::create_map( $arrayopts, 500, 400 );
-			
+
 			echo '</td></tr></table>';
 		} elseif( $accion == 'estadisticas' ){
 			controller_incidents::reports();
@@ -128,25 +128,25 @@ class Controller {
 			echo '</div><div id="user_counter">' . controller_user::user_count() . '</div><div id="register_btn" onclick="$(location).attr(\'href\',\'index.php?action=register\')"></div></div>';
 		}
 		echo '</div>';
-		
+
 		// Pie
 		echo '<div id="footer">ZGZagua participa en el desaf&iacute;o <a href="http://live.abredatos.es/teams/22">AbreDatos 2011</a>. ZGZAgua ' . date('Y') . ' </div>';
-		
+
 		echo '</div></body>';
 	}
-	
+
 	/**
 	 * Funcion para obtener datos de $_GET
 	 * @param String $key Clave que queremos obtener
 	 */
-	 public function get( $key ) {
+	 public static function get( $key ) {
 	 	$return = '';
 	 	if ( isset( $_GET[$key] ) ) {
 	 		$return = trim( $_GET[$key] );
 	 	}
 	 	return $return;
 	 }
-	 
+
 	 /**
 	  * Funcion para obtener datos de $_POST
 	  */
@@ -157,11 +157,11 @@ class Controller {
 	 	}
 	 	return $return;
 	 }
-	 
+
 	 /**
 	  * Proporciona la api key de google asociada al dominio
 	  */
-	 public function google_key() {
+	 public static function google_key() {
 	 	return 'ABQIAAAA2JikbGJZ0fUtFRmFto1WoBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTDj_fgsM8tRX5c1uxioRFlfhBb0Q';// Local
 //	 	return 'ABQIAAAA2JikbGJZ0fUtFRmFto1WoBSbRSau-Xwlj9CD1S8yfl-npsugQxQVkPFlEvHEqjKZlq2PBHAQtPgaEA';// remoto
 	 }
