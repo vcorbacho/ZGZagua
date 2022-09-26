@@ -49,7 +49,6 @@ class model_incident {
         if ( is_a( $incidencia, 'SimpleXMLElement' ) ) {
             // Sacamos la descripcion
             $descripcion = $incidencia->description;
-            $descripcion = $descripcion->ul;
             $descripcion = $descripcion->children();
             $descripcion = reset( $descripcion );
 

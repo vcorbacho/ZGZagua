@@ -32,7 +32,7 @@ class controller_incidents {
     /**
      * Carga datos del rss del ayuntamiento
      */
-    function load_xml() {
+    public static function load_xml() {
         echo 'Importando datos...<br/>';
         // Bucle para importar por fechas, vamos a importar siempre desde el dia anterior hasta el posterior por si acaso
         $fecha = date( 'Y-m-d' );
