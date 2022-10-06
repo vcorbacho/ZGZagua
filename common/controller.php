@@ -24,7 +24,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-class Controller {
+namespace ZGZagua\common;
+
+class controller {
 	/**
 	 * Funcion para mostrar la cabecera html
 	 * @param boolean $echo Lo muestra por pantalla si true
@@ -90,20 +92,20 @@ class Controller {
 
 		if ( $accion == 'login' ) {
 			// Login de usuario (parte 1)
-			controller_user::login();
+			ZGZagua\users\controller::login();
 		} elseif ($accion == 'login_confirm' ) {
 			// Login de usuario (confirmacion openID)
-			controller_user::login_verify();
+			ZGZagua\users\controller::login_verify();
 		} elseif( $accion == 'register' ) {
-			controller_user::user_register();
+			ZGZagua\users\controller::user_register();
 		} elseif( $accion == 'activateuser' ) {
-			controller_user::user_activate();
+			ZGZagua\users\controller::user_activate();
 		} elseif( $accion == 'logout' ) {
-			controller_user::logout();
+			ZGZagua\users\controller::logout();
 		} elseif( $accion == 'perfil' ) {
-			controller_user::user_profile();
+			ZGZagua\users\controller::user_profile();
 		} elseif( $accion == 'nueva_alerta' ) {
-			controller_incidents::add_alert();
+			\ZGZagua\incidents\controller::add_alert();
 		} elseif( $accion == 'cortes' ) {
 			// Cortes pervistos para hoy
 			$arrayopts[ 'fin_min' ] = date('Y-m-d 00:00:00');
@@ -112,20 +114,20 @@ class Controller {
 			echo '<table id="container_cortes"><tr><td>
 			<h1>Cortes previstos para el ' . strftime("%e de %B de %Y",time()) . '</h1>';
 
-			controller_incidents::generate_list( $arrayopts );
+			\ZGZagua\incidents\controller::generate_list( $arrayopts );
 
 			echo '</td><td style="padding:50px 20px 20px 10px;">';
 
-			controller_incidents::create_map( $arrayopts, 500, 400 );
+			\ZGZagua\incidents\controller::create_map( $arrayopts, 500, 400 );
 
 			echo '</td></tr></table>';
 		} elseif( $accion == 'estadisticas' ){
-			controller_incidents::reports();
+			\ZGZagua\incidents\controller::reports();
 		} else {
 			// Portada
 			echo '<div id="container_index"><div id="map_index">';
-			controller_incidents::create_map();
-			echo '</div><div id="user_counter">' . controller_user::user_count() . '</div><div id="register_btn" onclick="$(location).attr(\'href\',\'index.php?action=register\')"></div></div>';
+			\ZGZagua\incidents\controller::create_map();
+			echo '</div><div id="user_counter">' . \ZGZagua\users\controller::user_count() . '</div><div id="register_btn" onclick="$(location).attr(\'href\',\'index.php?action=register\')"></div></div>';
 		}
 		echo '</div>';
 

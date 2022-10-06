@@ -23,11 +23,11 @@
  * @package incidents
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
+namespace ZGZagua\incidents;
 
-require_once( 'incidents_model.php' );
 require_once( 'incidents_xml_model.php' );
 
-class controller_incidents {
+class controller {
 
     /**
      * Carga datos del rss del ayuntamiento
@@ -40,7 +40,7 @@ class controller_incidents {
         $fecha_final = strtotime( $fecha . ' +1 days' );
         while ( $fecha_inicial <= $fecha_final ) {
             $fecha = date( 'd/m/Y', $fecha_inicial );
-            new model_incident_xml( $fecha, $fecha );
+            new ZGZagua\incidents\model_xml( $fecha, $fecha );
             $fecha_inicial = strtotime( $fecha . ' +1 days' );
         }
         echo 'Datos importados';
@@ -63,7 +63,7 @@ class controller_incidents {
         }
 
         // Obtenemos las incidencias
-        $incidencias = model_incident::get_incidents( $arrayopts );
+        $incidencias = model::get_incidents( $arrayopts );
 
         // JS googlemaps
         $str .= '<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q&sensor=false"></script>';
@@ -113,7 +113,7 @@ class controller_incidents {
     /**
      * Muestra una lista de los cortes obtenidos a partir de las opciones de busqueda
      */
-    function generate_list( $arrayopts = [] ) {
+    static function generate_list( $arrayopts = [] ) {
         $str = '';
 
         // Si no hay opciones, mostraremos los cortes para hoy
@@ -122,7 +122,7 @@ class controller_incidents {
             $arrayopts[ 'fin_max' ] = date( 'Y-m-d 23:59:59' );
         }
 
-        $incidencias = model_incident::get_incidents( $arrayopts );
+        $incidencias = model::get_incidents( $arrayopts );
 
         if ( is_array( $incidencias ) && sizeof( $incidencias ) > 0 ) {
             // Generamos la lista
@@ -176,10 +176,10 @@ class controller_incidents {
      */
     public function add_alert() {
         if ( isset( $_SESSION[ 'userID' ] ) && $_SESSION[ 'userID' ] != '' ) {
-            if ( Controller::post( 'alerta' ) != '' ) {
-                $latitud = mysql_escape_string( Controller::post( 'latitud' ) );
-                $longitud = mysql_escape_string( Controller::post( 'longitud' ) );
-                $direccion = mysql_escape_string( Controller::post( 'direccion' ) );
+            if ( \Iternova\Common\Controller::post( 'alerta' ) != '' ) {
+                $latitud = mysql_escape_string( \Iternova\Common\Controller::post( 'latitud' ) );
+                $longitud = mysql_escape_string( \Iternova\Common\Controller::post( 'longitud' ) );
+                $direccion = mysql_escape_string( \Iternova\Common\Controller::post( 'direccion' ) );
                 $direccion = explode( ',', $direccion );
                 $numero = '';
                 if ( count( $direccion ) >= 2 ) {
@@ -300,8 +300,8 @@ class controller_incidents {
     /**
      * Funcion para estadisticas
      */
-    function reports() {
-        $periodo = Controller::get( 'periodo' );
+    static function reports() {
+        $periodo = \ZGZagua\common\controller::get( 'periodo' );
         echo '<div id="tabs" style="width:960px; margin:0 auto; padding:20px 0 30px 0;">';
         switch ( $periodo ) {
             case 'mes':
@@ -341,7 +341,7 @@ class controller_incidents {
         $sql = "select direccion,numero,email from locations l left join users u on u.id=l.user_id where u.last_notified<'$fecha'";
         $usr_resultado = $database->query( $sql );
 
-        if ( $usuario = mysql_fetch_array( $usr_resultado ) ) {
+        if ( $usuario = mysqli_fetch_array( $usr_resultado ) ) {
             // Esto es muy poco eficiente, pero no da tiempo a optimizarlo, como en principio
             // no se van a hacer muchas consultas tiene paso, pero cuando termine el plazo de
             // votaciones hay que cambiarlo
@@ -373,9 +373,9 @@ class controller_incidents {
 
                 if ( $notificaciones != '' ) {
                     $notificaciones = '<ul>' . $notificaciones . '</ul>';
-                    $para = Controller::post( 'e-mail' );
+                    $para = \Iternova\Common\Controller::post( 'e-mail' );
                     $titulo = 'Registro en ZGZagua';
-                    $mensaje = Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="https://zgzagua.es">ZGZagua</a></div></body></html>';
+                    $mensaje = \Iternova\Common\Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="https://zgzagua.es">ZGZagua</a></div></body></html>';
 
                     $cabeceras = 'MIME-Version: 1.0' . "\r\n";
                     $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -385,7 +385,7 @@ class controller_incidents {
 
                     mail( $para, $titulo, $mensaje, $cabeceras );
                 }
-            } while ( $usuario = mysql_fetch_array( $usr_resultado ) );
+            } while ( $usuario = mysqli_fetch_array( $usr_resultado ) );
         }
     }
 }

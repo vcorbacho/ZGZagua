@@ -24,16 +24,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-require_once( 'libs/openid.php' );
-require_once( 'users/users_model.php' );
 
-class controller_user {
+namespace ZGZagua\users;
+
+require_once( 'libs/openid.php' );
+
+class controller {
 
     /**
      * Funcion para obtener login mediante openID
      */
     function login() {
-        $provider = Controller::get( 'provider' );
+        $provider = \Iternova\Common\Controller::get( 'provider' );
 
         // Proveedor
         switch ( $provider ) {
@@ -78,10 +80,10 @@ class controller_user {
     }
 
     function login_verify() {
-        if ( Controller::get( 'provider' ) === 'zgzagua' ) {
+        if ( \Iternova\Common\Controller::get( 'provider' ) === 'zgzagua' ) {
             // Login normal
             self::user_login();
-        } elseif ( Controller::get( 'oauth_token' ) !== '' ) {
+        } elseif ( \Iternova\Common\Controller::get( 'oauth_token' ) !== '' ) {
             //Twitter
             require_once( 'libs/twitter/twitteroauth/twitteroauth.php' );
             require_once( 'libs/twitter/config.php' );
@@ -111,7 +113,7 @@ class controller_user {
             }
             header( 'Location: ./index.php' );
 
-        } elseif ( Controller::get( 'openid_mode' ) !== '' ) {
+        } elseif ( \Iternova\Common\Controller::get( 'openid_mode' ) !== '' ) {
             // OpenID
             $openid = new LightOpenID;
             $openid->data = $_GET;
@@ -129,10 +131,10 @@ class controller_user {
      */
     private function user_login( $email = '', $external = false, $password = '' ) {
         if ( $email === '' ) {
-            $email = Controller::post( 'e-mail' );
+            $email = \Iternova\Common\Controller::post( 'e-mail' );
         }
         if ( $password === '' ) {
-            $password = Controller::post( 'password' );
+            $password = \Iternova\Common\Controller::post( 'password' );
         }
 
         // Si external es true miramos si esta en la bdd
@@ -156,28 +158,28 @@ class controller_user {
      */
     public function user_register( $mail = '', $external = false ) {
         if ( $mail === '' ) {
-            $mail = Controller::post( 'e-mail' );
+            $mail = \Iternova\Common\Controller::post( 'e-mail' );
         }
 
         // Mostramos pantalla para registro
         echo '<div style="margin-left:30px;margin-bottom:30px;"><h1>Registro de usuario</h1>';
-        if ( $external || ( Controller::post( 'register' ) &&
-                ( preg_match( "/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", Controller::post( 'e-mail' ) ) && Controller::post( 'password' ) != '' && strlen( Controller::post( 'password' ) ) > 5 && Controller::post( 'password' ) == Controller::post( 'repassword' ) ) ) ) {
+        if ( $external || ( \Iternova\Common\Controller::post( 'register' ) &&
+                ( preg_match( "/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", \Iternova\Common\Controller::post( 'e-mail' ) ) && \Iternova\Common\Controller::post( 'password' ) != '' && strlen( \Iternova\Common\Controller::post( 'password' ) ) > 5 && \Iternova\Common\Controller::post( 'password' ) == \Iternova\Common\Controller::post( 'repassword' ) ) ) ) {
             // Alamacenamos el usuario
             // Mensaje para que active el usuario
             $active_key = sha1( time() . rand() );
             $usuario = new model_user();
-            $usr_opts[ 'email' ] = mysql_escape_string( Controller::post( 'e-mail' ) );
-            $usr_opts[ 'password' ] = sha1( Controller::post( 'password' ) );
+            $usr_opts[ 'email' ] = mysqli_escape_string( \Iternova\Common\Controller::post( 'e-mail' ) );
+            $usr_opts[ 'password' ] = sha1( \Iternova\Common\Controller::post( 'password' ) );
             $usr_opts[ 'registration_date' ] = date( 'Y-m-d H:i:s' );
             $usr_opts[ 'active_key' ] = $active_key;
             $usuario->set( $usr_opts );
             if ( $usuario->store() ) {
                 $url = 'http://zgzagua.es?action=activateuser&key=' . $active_key . '&email=' . $usuario->email;
                 $link = '<a href="' . $url . '">' . $url . '</a>';
-                $para = Controller::post( 'e-mail' );
+                $para = \Iternova\Common\Controller::post( 'e-mail' );
                 $titulo = 'Registro en ZGZagua';
-                $mensaje = Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Gracias por registrarse en <a href="http://zgzagua.es">ZGZagua</a>. Para activar su cuenta y configurar sus notificaciones, por favor, pulse el siguiente enlace: ' . $link . '</div></body></html>';
+                $mensaje = \Iternova\Common\Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Gracias por registrarse en <a href="http://zgzagua.es">ZGZagua</a>. Para activar su cuenta y configurar sus notificaciones, por favor, pulse el siguiente enlace: ' . $link . '</div></body></html>';
 
                 $cabeceras = 'MIME-Version: 1.0' . "\r\n";
                 $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -192,7 +194,7 @@ class controller_user {
                 echo '<h3>Ocurri&oacute; un error al registrar su usario. ¿Est&aacute; ya registrado?</h3>';
             }
         } else {
-            if ( Controller::post( 'register' ) ) {
+            if ( \Iternova\Common\Controller::post( 'register' ) ) {
                 // Ha habido un error
                 echo '<div style="background:red;padding-left:5px;"><h2>Por favor, compruebe que ha escrito una direcci&oacute;n de correo v&aacute;lida y una contrase&ntilde;a de al menos seis caracteres.</h2></div>';
             }
@@ -210,14 +212,14 @@ class controller_user {
      * Activa un usuario
      */
     public function user_activate() {
-        $key = Controller::get( 'key' );
-        $email = Controller::get( 'email' );
+        $key = \Iternova\Common\Controller::get( 'key' );
+        $email = \Iternova\Common\Controller::get( 'email' );
         // Buscamos el usuario
         $database = new database();
         $sql = "SELECT * FROM users WHERE email='$email' AND active='0' AND active_key='$key' LIMIT 1";
         $results = $database->query( $sql );
 
-        if ( $row = mysql_fetch_array( $results ) ) {
+        if ( $row = mysqli_fetch_array( $results ) ) {
             $usuario = new model_user();
             $usuario->set( $row );
             $usuario->active = true;
@@ -252,7 +254,7 @@ class controller_user {
             echo '<h1>Perfil personal</h1>';
             echo '<span class="b">E-mail: </span>' . $usuario->email;
             echo '<h2>Alertas registradas <a href="index.php?action=nueva_alerta">[Registrar nueva alerta]</a></h2>';
-            controller_incidents::display_incidents( $usuario->id );
+            \ZGZagua\incidents\controller::display_incidents( $usuario->id );
             echo '</div>';
         } else {
             echo 'No autorizado.';
@@ -264,7 +266,7 @@ class controller_user {
      */
     public static function user_count() {
         $ret = 0;
-        $database = new database();
+        $database = new \ZGZagua\common\database();
 
         $sql = "SELECT count(id) contador FROM users WHERE 1";
 

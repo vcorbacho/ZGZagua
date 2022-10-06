@@ -23,6 +23,8 @@
  * @package common
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
+ namespace ZGZagua\common;
+
  class database {
  	private $database = '';
 
@@ -43,4 +45,3 @@
  	 	return mysqli_query( $this->database,$sql);
  	 }
  }
-?>

@@ -6,15 +6,16 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace ZGZagua\users;
 
 /**
  * Modelo logico para las funcionalidades de los usuarios
@@ -43,10 +44,10 @@ class model_user {
     function __construct( $email = '', $password = '', $externo = false ) {
         if ( $email ) {
             // Buscamos el usuario
-            $database = new database();
+            $database = new \ZGZagua\common\database();
             $results = $database->query( "SELECT * FROM users WHERE email='$email' AND active='1' LIMIT 1" );
 
-            if ( $row = mysql_fetch_array( $results ) ) {
+            if ( $row = mysqli_fetch_array( $results ) ) {
                 if ( $externo || $row[ 'password' ] === sha1( $password ) ) {
                     // Usuario valido
                     $this->set( $row );
@@ -62,10 +63,10 @@ class model_user {
      */
     function get( $id ) {
         // Buscamos el usuario
-        $database = new database();
+        $database = new \ZGZagua\common\database();
         $results = $database->query( "SELECT * FROM users WHERE id='$id' AND active='1' LIMIT 1" );
 
-        if ( $row = mysql_fetch_array( $results ) ) {
+        if ( $row = mysqli_fetch_array( $results ) ) {
             // Usuario valido
             $this->set( $row );
         }
@@ -113,7 +114,7 @@ class model_user {
             $sql .= "'" . $this->id . "',";
         }
         $sql .= "'" . $this->email . "','" . $this->password . "','" . $this->registration_date . "','" . $this->last_notified . "','" . $this->active . "','" . $this->active_key . "')";
-        $database = new database();
+        $database = new \ZGZagua\common\database();
 
         return $database->query( $sql );
     }
@@ -123,7 +124,7 @@ class model_user {
      */
     public function update() {
         $sql = "UPDATE users SET active='" . $this->active . "' WHERE id='" . $this->id . "'";
-        $database = new database();
+        $database = new \ZGZagua\common\database();
 
         return $database->query( $sql );
     }

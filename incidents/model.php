@@ -24,7 +24,9 @@
  * @package
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  */
-class model_incident {
+namespace ZGZagua\incidents;
+
+class model {
 
     protected $id = -1;
     protected $titulo = '';
@@ -119,7 +121,7 @@ class model_incident {
      * @return array
      */
     public static function get_incidents( $search_opts ) {
-        $database = new database();
+        $database = new \ZGZagua\common\database();
         $array_return = [];
 
         $where = ' WHERE 1 ';
@@ -153,7 +155,7 @@ class model_incident {
         $resultado = $database->query( $sql );
 
         while ( $row = mysqli_fetch_array( $resultado ) ) {
-            $array_return[] = new model_incident( $row );
+            $array_return[] = new model( $row );
         }
 
         return $array_return;
