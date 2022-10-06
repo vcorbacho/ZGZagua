@@ -152,7 +152,7 @@ class controller {
 	 /**
 	  * Funcion para obtener datos de $_POST
 	  */
-	 public function post( $key ) {
+	 public static function post( $key ) {
 	 	$return = '';
 	 	if ( isset( $_POST[$key] ) ) {
 	 		$return = trim( $_POST[$key] );

@@ -154,7 +154,7 @@ class controller {
         $sql = "SELECT * FROM locations WHERE user_id='$id'";
         $resultados = $database->query( $sql );
         $str = '';
-        if ( $row = mysql_fetch_array( $resultados ) ) {
+        if ( $row = mysqli_fetch_array( $resultados ) ) {
             // Generamos la lista
             $str .= '<div style="height:320px; overflow:auto;"><table id="list_current_cortes">';
 
@@ -162,7 +162,7 @@ class controller {
                 $staticmap = 'https://maps.google.com/maps/api/staticmap?zoom=16&size=115x115&maptype=roadmap&markers=' . $row[ 'latitud' ] . ',' . $row[ 'longitud' ] . '&sensor=false';
                 $str .= '<tr><td><img src="' . $staticmap . '" alt=""/></td>';
                 $str .= '<td><h2>' . $row[ 'direccion' ] . ', ' . $row[ 'numero' ] . '</h2></td></tr>';
-            } while ( $row = mysql_fetch_array( $resultados ) );
+            } while ( $row = mysqli_fetch_array( $resultados ) );
 
             $str .= '</table></div>';
             echo $str;
@@ -177,9 +177,9 @@ class controller {
     public function add_alert() {
         if ( isset( $_SESSION[ 'userID' ] ) && $_SESSION[ 'userID' ] != '' ) {
             if ( \Iternova\Common\Controller::post( 'alerta' ) != '' ) {
-                $latitud = mysql_escape_string( \Iternova\Common\Controller::post( 'latitud' ) );
-                $longitud = mysql_escape_string( \Iternova\Common\Controller::post( 'longitud' ) );
-                $direccion = mysql_escape_string( \Iternova\Common\Controller::post( 'direccion' ) );
+                $latitud = mysqli_escape_string( \Iternova\Common\Controller::post( 'latitud' ) );
+                $longitud = mysqli_escape_string( \Iternova\Common\Controller::post( 'longitud' ) );
+                $direccion = mysqli_escape_string( \Iternova\Common\Controller::post( 'direccion' ) );
                 $direccion = explode( ',', $direccion );
                 $numero = '';
                 if ( count( $direccion ) >= 2 ) {
@@ -281,11 +281,11 @@ class controller {
     public function suggest() {
         $return_arr = [];
         $database = new database();
-        $sql = "SELECT direccion FROM cortes where direccion like '%" . mysql_real_escape_string( $_GET[ 'term' ] ) . "%'";
+        $sql = "SELECT direccion FROM cortes where direccion like '%" . mysqli_real_escape_string( $_GET[ 'term' ] ) . "%'";
         $resultado = $database->query( $sql );
         /* Retrieve and store in array the results of the query.*/
 
-        while ( $row = mysql_fetch_array( $resultado ) ) {
+        while ( $row = mysqli_fetch_array( $resultado ) ) {
             $row_array[ 'direccion' ] = $row[ 'direccion' ];
 
             array_push( $return_arr, $row_array );
@@ -350,7 +350,7 @@ class controller {
                 $direccion = str_replace( ' ', '%', $usuario[ 'direccion' ] );
                 $sql2 = "SELECT * FROM cortes WHERE fin='$fecha' AND direccion LIKE '$direccion' order by fin DESC limit 1"; // Buscamos el ultimo para cada direccion
                 $cortes = $database->query( $sql2 );
-                if ( $calle = mysql_fetch_array( $cortes ) ) {
+                if ( $calle = mysqli_fetch_array( $cortes ) ) {
                     // Comprobamos numeros
                     $notificar = false;
                     if ( $usuario[ 'numero' ] != '' ) {
@@ -373,9 +373,9 @@ class controller {
 
                 if ( $notificaciones != '' ) {
                     $notificaciones = '<ul>' . $notificaciones . '</ul>';
-                    $para = \Iternova\Common\Controller::post( 'e-mail' );
+                    $para = \ZGZagua\common\controller::post( 'e-mail' );
                     $titulo = 'Registro en ZGZagua';
-                    $mensaje = \Iternova\Common\Controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="https://zgzagua.es">ZGZagua</a></div></body></html>';
+                    $mensaje = \ZGZagua\common\controller::show_html_header( false, false ) . '<body><div id="container"><div id="header"></div>Se han detectado las siguientes coincidencias entre los cortes programados por el Ayuntamiento de Zaragoza y sus alertas: ' . $notificaciones . '<br/><br/><a href="https://zgzagua.es">ZGZagua</a></div></body></html>';
 
                     $cabeceras = 'MIME-Version: 1.0' . "\r\n";
                     $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
