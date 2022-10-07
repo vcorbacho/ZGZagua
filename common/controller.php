@@ -164,7 +164,7 @@ class controller {
 	  * Proporciona la api key de google asociada al dominio
 	  */
 	 public static function google_key() {
-			return file_get_contents(__DIR__.'../maps/googlemaps.key'); // Local
+			return file_get_contents(__DIR__.'/../maps/googlemaps.key'); // Local
 	 }
 }
 ?>
