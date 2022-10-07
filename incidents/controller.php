@@ -66,13 +66,20 @@ class controller {
         $incidencias = model::get_incidents( $arrayopts );
 
         // JS googlemaps
-        $str .= '<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q&sensor=false"></script>';
+        $str .= '<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=' .\ZGZagua\common\controller::google_key() .'&sensor=false"></script>';
         $rand = rand();
         // Generamos el mapa
         $str .= "<script type=\"text/javascript\">
  				function initialize(){
- 					var latlng = new google.maps.LatLng(41.65,-0.87);
- 					var myOptions = {
+ 					const centerPoint = {lat: 41.65, lng: -0.87};
+ 					const map$rand = new google.maps.Map(document.getElementById('incidents_map$rand'),{
+ 					    zoom:12,
+ 					    center: centerPoint,
+ 					    mapTypeId: google.maps.MapTypeId.ROADMAP,
+ 					    streetViewControl: false
+ 					});
+ 					
+ 					/*var myOptions = {
 					    zoom: 12,
 						center: latlng,
 						mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -93,7 +100,7 @@ class controller {
 						    infowindow.setPosition(position);
 						    infowindow.open(map$rand);
 						 });
- 					}";
+ 					}*/";
 
         if ( is_array( $incidencias ) ) {
             foreach ( $incidencias as $incidencia ) {
@@ -150,7 +157,7 @@ class controller {
      * @param int $id ID del usuario
      */
     public function display_incidents( $id ) {
-        $database = new database();
+        $database = new \ZGZagua\common\database();
         $sql = "SELECT * FROM locations WHERE user_id='$id'";
         $resultados = $database->query( $sql );
         $str = '';
@@ -176,10 +183,10 @@ class controller {
      */
     public function add_alert() {
         if ( isset( $_SESSION[ 'userID' ] ) && $_SESSION[ 'userID' ] != '' ) {
-            if ( \Iternova\Common\Controller::post( 'alerta' ) != '' ) {
-                $latitud = mysqli_escape_string( \Iternova\Common\Controller::post( 'latitud' ) );
-                $longitud = mysqli_escape_string( \Iternova\Common\Controller::post( 'longitud' ) );
-                $direccion = mysqli_escape_string( \Iternova\Common\Controller::post( 'direccion' ) );
+            if ( \ZGZagua\Common\Controller::post( 'alerta' ) != '' ) {
+                $latitud = mysqli_escape_string( \ZGZagua\Common\Controller::post( 'latitud' ) );
+                $longitud = mysqli_escape_string( \ZGZagua\Common\Controller::post( 'longitud' ) );
+                $direccion = mysqli_escape_string( \ZGZagua\Common\Controller::post( 'direccion' ) );
                 $direccion = explode( ',', $direccion );
                 $numero = '';
                 if ( count( $direccion ) >= 2 ) {
@@ -193,7 +200,7 @@ class controller {
                 }
                 $sql = "INSERT INTO locations (direccion,numero,latitud,longitud,user_id) VALUES ('$direccion','$numero','$latitud','$longitud','" . $_SESSION[ 'userID' ] . "')";
 
-                $database = new database();
+                $database = new \ZGZagua\common\database();
                 $database->query( $sql );
                 echo '<h2 style="padding-left:30px;">Alerta guardada correctamente. Ir al <a href="index.php?action=perfil">perfil</a>.</h2>';
             } else {
@@ -280,7 +287,7 @@ class controller {
      */
     public function suggest() {
         $return_arr = [];
-        $database = new database();
+        $database = new \ZGZagua\common\database();
         $sql = "SELECT direccion FROM cortes where direccion like '%" . mysqli_real_escape_string( $_GET[ 'term' ] ) . "%'";
         $resultado = $database->query( $sql );
         /* Retrieve and store in array the results of the query.*/
@@ -336,7 +343,7 @@ class controller {
      */
     function notify() {
         // Cogemos todos los usuarios a los que no hemos notificado hoy
-        $database = new database();
+        $database = new \ZGZagua\common\database();
         $fecha = date( 'Y-m-d 23:59:59' );
         $sql = "select direccion,numero,email from locations l left join users u on u.id=l.user_id where u.last_notified<'$fecha'";
         $usr_resultado = $database->query( $sql );

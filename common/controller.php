@@ -164,8 +164,11 @@ class controller {
 	  * Proporciona la api key de google asociada al dominio
 	  */
 	 public static function google_key() {
-	 	return 'ABQIAAAA2JikbGJZ0fUtFRmFto1WoBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTDj_fgsM8tRX5c1uxioRFlfhBb0Q';// Local
-//	 	return 'ABQIAAAA2JikbGJZ0fUtFRmFto1WoBSbRSau-Xwlj9CD1S8yfl-npsugQxQVkPFlEvHEqjKZlq2PBHAQtPgaEA';// remoto
+		 if( $_SERVER[ 'HTTP_HOST' ] === 'localhost') {
+			return 'AIzaSyD4OOkAHXG6lwfiCs_whSXdQlsbj0hI5wo';// Local
+		 }else {
+		    return 'AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q';// remoto
+		 }
 	 }
 }
 ?>
