@@ -164,11 +164,7 @@ class controller {
 	  * Proporciona la api key de google asociada al dominio
 	  */
 	 public static function google_key() {
-		 if( $_SERVER[ 'HTTP_HOST' ] === 'localhost') {
-			return 'AIzaSyD4OOkAHXG6lwfiCs_whSXdQlsbj0hI5wo';// Local
-		 }else {
-		    return 'AIzaSyAsOPWXiez2kJ3_svUSrHrxsNRBlmCwp7Q';// remoto
-		 }
+			return file_get_contents(__DIR__.'../maps/googlemaps.key'); // Local
 	 }
 }
 ?>
